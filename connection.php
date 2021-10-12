@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "foodmart_store";
+$dbname = "foodmart";
 
 
 	// Create connection
@@ -11,5 +11,3 @@ $dbname = "foodmart_store";
 	if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 	}
-
-?>
