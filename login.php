@@ -2,6 +2,12 @@
 
 require 'connection.php';
 
+if (isset($_COOKIE['admin_logged']) && $_COOKIE['admin_logged'] == 1) {
+    header("Location: index.php");
+    // echo $_COOKIE['admin_logged'];
+    // echo isset($_COOKIE['admin_logged']) == 1;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
     $mailid = $_POST["inputEmail"];
@@ -23,7 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $_SESSION['user_name'] = $row['admin_uname'];
                 $_SESSION['user_email'] = $row['admin_email'];
 
-                header("Location: index.php?success=true");
+                $cookie_name = "admin_logged";
+                $cookie_value = true;
+                setcookie($cookie_name, $cookie_value, time() + (86400), "/");
+                header("Location: index.php");
                 exit();
             }
         } else {

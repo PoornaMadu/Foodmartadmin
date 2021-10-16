@@ -1,5 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+require 'connection.php';
+
+if ($_SERVER["REQUEST_METHOD"] == 'POST') {
+    // $mailid = $_POST["emailid"];
+    // $password = $_POST["password"];
+    $name = $_POST['productname'];
+    $punit = $_POST['productunit'];
+    $cat = $_POST['cat'];
+    $price = $_POST['price'];
+    $qty = $_POST['qty'];
+    $n1 = $_POST['n1'];
+    $n2 = $_POST['n2'];
+    $n3 = $_POST['n3'];
+    $n4 = $_POST['n4'];
+    $n5 = $_POST['n5'];
+    $n1unit = $_POST['n1unit'];
+    $n2unit = $_POST['n2unit'];
+    $n3unit = $_POST['n3unit'];
+    $n4unit = $_POST['n4unit'];
+    $n5unit = $_POST['n5unit'];
+    $date = time();
+    // $img = $_POST['img'];
+    if (empty($name) || empty($cat) || empty($price) || empty($qty) || empty($n1) || empty($n2) || empty($n3) || empty($n4) || empty($n5) || empty($n1unit) || empty($n2unit) || empty($n3unit) || empty($n4unit) || empty($n5unit)) {
+        echo ("<script>alert('Fill out all the fields')</script>");
+        // exit();
+    } else {
+        move_uploaded_file($_FILES["img"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/Foodsysterm/images/" . $date . ".jpg");
+        $sql = "INSERT INTO products(cat_id,name,price,qty,unit,img) values (" . $cat . ",'" . $name . "'," . $price . "," . $qty . ",'" . $punit . "','" . $date . ".jpg')";
+        $result = $conn->query($sql);
+        $insertedid = mysqli_insert_id($conn);
+        $sql2 = "INSERT INTO nutrients(product_id,n1,n2,n3,n4,n5,n1_unit,n2_unit,n3_unit,n4_unit,n5_unit) values (" . $insertedid . "," . $n1 . "," . $n2 . "," . $n3 . "," . $n4 . "," . $n5 . ",'" . $n1unit . "','" . $n2unit . "','" . $n3unit . "','" . $n4unit . "','" . $n5unit . "')";
+        $result2 = $conn->query($sql2);
+        echo ("<script>alert('Product Added Successfully!!!')</script>");
+        $conn->close();
+    }
+}
+
+?>
 
 <head>
     <meta charset="utf-8" />
@@ -50,10 +90,10 @@
                             Products
                         </a>
                         <a class="nav-link" href="index.php">
-                            <div class="sb-nav-link-icon"><i class="fa fa-usd"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa fa-gift"></i></div>
                             Orders
                         </a>
-                        <a class="nav-link active" href="index.php">
+                        <a class="nav-link active" href="productadd.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
                         </a>
@@ -64,8 +104,7 @@
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Add Products</h1>
                     <br>
-                    <form>
-
+                    <form method="post" action="" enctype="multipart/form-data">
                         <!-- 2 column grid layout with text inputs for the first and last names -->
                         <div class="row mb-4">
                             <div class="col">
@@ -74,13 +113,21 @@
                                     <input type="text" id="productname" name="productname" class="form-control" />
                                 </div>
                             </div>
+                            <div class="col ">
+                                <label for="exampleFormControlTextarea11" class="form-label">Unit of Measure</label>
+                                <select class="form-select" aria-label="Default select example" name="productunit">
+                                    <option selected hidden value="">Select Unit</option>
+                                    <option value="">none</option>
+                                    <option value="mg">kg</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Text input -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="form6Example3">Setect Category</label>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Select Category</option>
+                            <select class="form-select" name="cat" aria-label="Default select example" name="cat">
+                                <option selected hidden value="">Select Category</option>
                                 <option value="1">Vegetables</option>
                                 <option value="2">Fruits</option>
                                 <option value="3">Juices</option>
@@ -91,11 +138,11 @@
                         <!-- Text input -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="form6Example4">Product Price</label>
-                            <input type="text" id="form6Example4" class="form-control" />
+                            <input type="text" name="price" id="form6Example4" class="form-control" />
                         </div>
                         <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example4">Qunatity</label>
-                            <input type="text" id="form6Example4" class="form-control" />
+                            <label class="form-label" for="form6Example4">Available Qunatity</label>
+                            <input type="text" name="qty" id="form6Example4" class="form-control" />
                         </div>
 
                         <!-- Number input -->
@@ -110,24 +157,24 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Protein Content in Product</label>
-                                <input type="text" class="form-control" placeholder="120">
+                                <input type="text" class="form-control" placeholder="120" name="n1">
                             </div>
                             <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Select Unit</option>
+                                <label for="exampleFormControlTextarea111" class="form-label">Unit</label>
+                                <select class="form-select" aria-label="Default select example" name="n1unit" required>
+                                    <option selected value="" hidden>Select Unit</option>
                                     <option value="g">gram</option>
                                     <option value="mg">miligram</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Fat Content in Product</label>
-                                <input type="text" class="form-control" placeholder="200">
+                                <label for="exampleFormControlTextarea13" class="form-label">Fat Content in Product</label>
+                                <input type="text" class="form-control" placeholder="200" name="n2">
                             </div>
                             <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Select Unit</option>
+                                <label for="exampleFormControlTextarea12" class="form-label">Unit</label>
+                                <select class="form-select" aria-label="Default select example" name="n2unit">
+                                    <option selected value="" hidden>Select Unit</option>
                                     <option value="g">gram</option>
                                     <option value="mg">miligram</option>
                                 </select>
@@ -136,24 +183,24 @@
                         <div class="row mb-4">
                             <div class="col ">
                                 <label for="exampleFormControlTextarea1" class="form-label">Carbs Content in Product</label>
-                                <input type="text" class="form-control" placeholder="150">
+                                <input type="text" class="form-control" placeholder="150" name="n3">
                             </div>
                             <div class="col ">
-                                <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Select Unit</option>
+                                <label for="exampleFormControlTextarea11" class="form-label">Unit</label>
+                                <select class="form-select" aria-label="Default select example" name="n3unit">
+                                    <option selected value="" hidden>Select Unit</option>
                                     <option value="g">gram</option>
                                     <option value="mg">miligram</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Fiber Content in Product</label>
-                                <input type="text" class="form-control" placeholder="320">
+                                <input type="text" class="form-control" placeholder="320" name="n4">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Select Unit</option>
+                                <select class="form-select" aria-label="Default select example" name="n4unit">
+                                    <option selected value="" hidden>Select Unit</option>
                                     <option value="g">gram</option>
                                     <option value="mg">miligram</option>
                                 </select>
@@ -162,12 +209,12 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Iron Content in Product</label>
-                                <input type="text" class="form-control" placeholder="180">
+                                <input type="text" class="form-control" placeholder="180" name="n5">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Select Unit</option>
+                                <select class="form-select" aria-label="Default select example" name="n5unit">
+                                    <option selected value="" hidden>Select Unit</option>
                                     <option value="g">gram</option>
                                     <option value="mg">miligram</option>
                                 </select>
@@ -178,9 +225,8 @@
                         <!-- Message input -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="customFile">Choose Product Image</label>
-                            <input type="file" class="form-control" id="customFile" />
+                            <input type="file" class="form-control" id="customFile" name="img" />
                             <br>
-
 
                             <!-- Submit button -->
                             <button type="submit" class="btn btn-primary btn-block mb-4">Add Product</button>

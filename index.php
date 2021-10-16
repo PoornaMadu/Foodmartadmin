@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
+    header("Location: login.php");
+}
+
+?>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
