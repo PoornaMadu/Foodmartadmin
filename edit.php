@@ -3,15 +3,25 @@
 <?php
 
 require 'connection.php';
+$row;
+if (!isset($_GET['id'])) {
+    header('location: productlist.php');
+} else {
+    $sql = "SELECT *,p.id as pid FROM products p INNER JOIN category c ON c.id=p.cat_id INNER JOIN nutrients n ON p.id=n.product_id where p.id=" . $_GET['id'];
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+    } else {
+        header('location: productlist.php');
+    }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    // $mailid = $_POST["emailid"];
-    // $password = $_POST["password"];
     $name = $_POST['productname'];
     $punit = $_POST['productunit'];
     $cat = $_POST['cat'];
-    $desc = $_POST['desc'];
     $price = $_POST['price'];
+    $desc = $_POST['desc'];
     $qty = $_POST['qty'];
     $n1 = $_POST['n1'];
     $n2 = $_POST['n2'];
@@ -24,18 +34,21 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     $n4unit = $_POST['n4unit'];
     $n5unit = $_POST['n5unit'];
     $date = time();
+    $imgname = $date . ".jpg";
     // $img = $_POST['img'];
     if (empty($name) || empty($cat) || empty($price) || empty($qty) || empty($n1) || empty($n2) || empty($n3) || empty($n4) || empty($n5) || empty($n1unit) || empty($n2unit) || empty($n3unit) || empty($n4unit) || empty($n5unit)) {
         echo ("<script>alert('Fill out all the fields')</script>");
         // exit();
+    } else if (empty($_FILES["img"]['name'])) {
+        $sql = "UPDATE products SET cat_id ='$cat',name='$name',price='$qty', description='$desc',qty='$qty',unit='$punit' WHERE id=" . $_GET['id'];
+        $result = $conn->query($sql);
+        echo ("<script>alert('Product Updated Successfully!!!')</script>");
+        $conn->close();
     } else {
         move_uploaded_file($_FILES["img"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/Foodsysterm/images/" . $date . ".jpg");
-        $sql = "INSERT INTO products(cat_id,name,description,price,qty,unit,img) values (" . $cat . ",'" . $name . "','" . $desc . "'," . $price . "," . $qty . ",'" . $punit . "','" . $date . ".jpg')";
+        $sql = "UPDATE products SET cat_id ='$cat',name='$name',price='$qty', description='$desc',qty='$qty',unit='$punit',img='$imgname' WHERE id=" . $_GET['id'];
         $result = $conn->query($sql);
-        $insertedid = mysqli_insert_id($conn);
-        $sql2 = "INSERT INTO nutrients(product_id,n1,n2,n3,n4,n5,n1_unit,n2_unit,n3_unit,n4_unit,n5_unit) values (" . $insertedid . "," . $n1 . "," . $n2 . "," . $n3 . "," . $n4 . "," . $n5 . ",'" . $n1unit . "','" . $n2unit . "','" . $n3unit . "','" . $n4unit . "','" . $n5unit . "')";
-        $result2 = $conn->query($sql2);
-        echo ("<script>alert('Product Added Successfully!!!')</script>");
+        echo ("<script>alert('Product Updated Successfully!!!')</script>");
         $conn->close();
     }
 }
@@ -102,7 +115,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Add Products</h1>
+                    <h1 class="mx-1 mb-1 mt-3">Edit Products</h1>
+                    <h4 class="mx-2 mb-2 mt-3">Product Name</h4>
                     <br>
                     <form method="post" action="" enctype="multipart/form-data">
                         <!-- 2 column grid layout with text inputs for the first and last names -->
@@ -110,15 +124,15 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                             <div class="col">
                                 <div class="form-outline">
                                     <label class="form-label" for="productname">Product Name</label>
-                                    <input type="text" id="productname" name="productname" class="form-control" />
+                                    <input type="text" id="productname" name="productname" class="form-control" value="<?php echo $row['name'] ?>" />
                                 </div>
                             </div>
                             <div class="col ">
                                 <label for="exampleFormControlTextarea11" class="form-label">Unit of Measure</label>
                                 <select class="form-select" aria-label="Default select example" name="productunit">
                                     <option selected hidden value="">Select Unit</option>
-                                    <option value="">none</option>
-                                    <option value="mg">kg</option>
+                                    <option value="" <?php echo $row['unit'] == '' ? "selected" : '' ?>>none</option>
+                                    <option value="mg" <?php echo $row['unit'] == 'kg' ? "selected" : '' ?>>kg</option>
                                 </select>
                             </div>
                         </div>
@@ -128,10 +142,10 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                             <label class="form-label" for="form6Example3">Setect Category</label>
                             <select class="form-select" name="cat" aria-label="Default select example" name="cat">
                                 <option selected hidden value="">Select Category</option>
-                                <option value="1">Vegetables</option>
-                                <option value="2">Fruits</option>
-                                <option value="3">Juices</option>
-                                <option value="4">Dried</option>
+                                <option value="1" <?php echo $row['cat_id'] == '1' ? "selected" : '' ?>>Vegetables</option>
+                                <option value="2" <?php echo $row['cat_id'] == '2' ? "selected" : '' ?>>Fruits</option>
+                                <option value="3" <?php echo $row['cat_id'] == '3' ? "selected" : '' ?>>Juices</option>
+                                <option value="4" <?php echo $row['cat_id'] == '4' ? "selected" : '' ?>>Dried</option>
                             </select>
                         </div>
 
@@ -139,17 +153,17 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                         <div class="form-outline mb-4">
                             <label class="form-label" for="form6Example42">Product Description</label>
                             <!-- <input type="text" name="price" id="form6Example4" class="form-control" /> -->
-                            <textarea class="form-control" name="desc" id="form6Example42"></textarea>
+                            <textarea class="form-control" name="desc" id="form6Example42" value="<?php echo $row['description'] ?>"></textarea>
                         </div>
 
                         <!-- Text input -->
                         <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example4">Product Price (Rs.)</label>
-                            <input type="number" name="price" id="form6Example4" class="form-control" />
+                            <label class="form-label" for="form6Example4">Product Price</label>
+                            <input type="number" name="price" id="form6Example4" class="form-control" value="<?php echo $row['price'] ?>" />
                         </div>
                         <div class="form-outline mb-4">
                             <label class="form-label" for="form6Example4">Available Qunatity</label>
-                            <input type="number" name="qty" id="form6Example4" class="form-control" />
+                            <input type="number" name="qty" id="form6Example4" class="form-control" value="<?php echo $row['qty'] ?>" />
                         </div>
 
                         <!-- Number input -->
@@ -164,66 +178,66 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                         <div class="row mb-4">
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Protein Content in Product</label>
-                                <input type="number" class="form-control" placeholder="120" name="n1">
+                                <input type="number" class="form-control" placeholder="120" name="n1" value="<?php echo $row['n1'] ?>">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea111" class="form-label">Unit</label>
                                 <select class="form-select" aria-label="Default select example" name="n1unit" required>
                                     <option selected value="" hidden>Select Unit</option>
-                                    <option value="g">gram</option>
-                                    <option value="mg">miligram</option>
+                                    <option value="g" <?php echo $row['n1_unit'] == 'g' ? "selected" : '' ?>>gram</option>
+                                    <option value="mg" <?php echo $row['n1_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea13" class="form-label">Fat Content in Product</label>
-                                <input type="number" class="form-control" placeholder="200" name="n2">
+                                <input type="number" class="form-control" placeholder="200" name="n2" value="<?php echo $row['n2'] ?>">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea12" class="form-label">Unit</label>
                                 <select class="form-select" aria-label="Default select example" name="n2unit">
                                     <option selected value="" hidden>Select Unit</option>
-                                    <option value="g">gram</option>
-                                    <option value="mg">miligram</option>
+                                    <option value="g" <?php echo $row['n2_unit'] == 'g' ? "selected" : '' ?>>gram</option>
+                                    <option value="mg" <?php echo $row['n2_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="col ">
                                 <label for="exampleFormControlTextarea1" class="form-label">Carbs Content in Product</label>
-                                <input type="number" class="form-control" placeholder="150" name="n3">
+                                <input type="number" class="form-control" placeholder="150" name="n3" value="<?php echo $row['n3'] ?>">
                             </div>
                             <div class="col ">
                                 <label for="exampleFormControlTextarea11" class="form-label">Unit</label>
                                 <select class="form-select" aria-label="Default select example" name="n3unit">
                                     <option selected value="" hidden>Select Unit</option>
-                                    <option value="g">gram</option>
-                                    <option value="mg">miligram</option>
+                                    <option value="g" <?php echo $row['n3_unit'] == 'g' ? "selected" : '' ?>>gram</option>
+                                    <option value="mg" <?php echo $row['n3_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Fiber Content in Product</label>
-                                <input type="number" class="form-control" placeholder="320" name="n4">
+                                <input type="number" class="form-control" placeholder="320" name="n4" value="<?php echo $row['n4'] ?>">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
                                 <select class="form-select" aria-label="Default select example" name="n4unit">
                                     <option selected value="" hidden>Select Unit</option>
-                                    <option value="g">gram</option>
-                                    <option value="mg">miligram</option>
+                                    <option value="g" <?php echo $row['n4_unit'] == 'g' ? "selected" : '' ?>>gram</option>
+                                    <option value="mg" <?php echo $row['n4_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Iron Content in Product</label>
-                                <input type="number" class="form-control" placeholder="180" name="n5">
+                                <input type="number" class="form-control" placeholder="180" name="n5" value="<?php echo $row['n5'] ?>">
                             </div>
                             <div class="col">
                                 <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
                                 <select class="form-select" aria-label="Default select example" name="n5unit">
                                     <option selected value="" hidden>Select Unit</option>
-                                    <option value="g">gram</option>
-                                    <option value="mg">miligram</option>
+                                    <option value="g" <?php echo $row['n5_unit'] == 'g' ? "selected" : '' ?>>gram</option>
+                                    <option value="mg" <?php echo $row['n5_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
                                 </select>
                             </div>
 
