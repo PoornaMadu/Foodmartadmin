@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-
 require 'connection.php';
 $row;
 if (!isset($_GET['id'])) {
@@ -52,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $conn->close();
     }
 }
-
 ?>
 
 <head>
