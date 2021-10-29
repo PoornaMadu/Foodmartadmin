@@ -34,7 +34,7 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="http://localhost/finalProject/FoodMartadmin/login.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -44,11 +44,11 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <a class="nav-link" href="index.php">
+                        <a class="nav-link active" href="index.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
-                        <a class="nav-link active" href="productlist.php">
+                        <a class="nav-link " href="productlist.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-archive"></i></div>
                             Products
                         </a>
@@ -59,6 +59,10 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
                         <a class="nav-link " href="productadd.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
+                        </a>
+                        <a class="nav-link " href="users.php">
+                            <div class="sb-nav-link-icon"><i class="fa fa-user "></i></div>
+                            Users
                         </a>
             </nav>
         </div>

@@ -6,12 +6,12 @@ $row;
 if (!isset($_GET['id'])) {
     header('location: productlist.php');
 } else {
-    $sql = "SELECT *,p.id as pid FROM products p INNER JOIN category c ON c.id=p.cat_id INNER JOIN nutrients n ON p.id=n.product_id where p.id=" . $_GET['id'];
+    $sql = "SELECT * FROM orders o INNER JOIN order_details od ON o.id=od.order_id INNER JOIN products p ON od.item_id=p.id where o.id=" . $_GET['id'];
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
     } else {
-        header('location: productlist.php');
+        header('location: orders.php');
     }
 }
 
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="login.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -100,161 +100,103 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                             <div class="sb-nav-link-icon"><i class="fa fa-archive"></i></div>
                             Products
                         </a>
-                        <a class="nav-link" href="orders.php">
+                        <a class="nav-link active" href="orders.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-gift"></i></div>
                             Orders
                         </a>
-                        <a class="nav-link active" href="productadd.php">
+                        <a class="nav-link " href="productadd.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
+                        </a>
+                        <a class="nav-link " href="users.php">
+                            <div class="sb-nav-link-icon"><i class="fa fa-user "></i></div>
+                            Users
                         </a>
             </nav>
         </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mx-1 mb-1 mt-3">Edit Products</h1>
-                    <h4 class="mx-2 mb-2 mt-3">Product Name</h4>
+                    <h1 class="mx-1 mb-1 mt-3">View Order Details</h1>
+                    <h4 class="mx-2 mb-2 mt-3">Ref No # <?php echo $row['ref'] ?></h4>
+                    <h4 class="mx-2 mb-2 mt-3">Date and time - <?php echo $row['dateadded'] ?></h4>
                     <br>
                     <form method="post" action="" enctype="multipart/form-data">
                         <!-- 2 column grid layout with text inputs for the first and last names -->
                         <div class="row mb-4">
                             <div class="col">
                                 <div class="form-outline">
-                                    <label class="form-label" for="productname">Product Name</label>
-                                    <input type="text" id="productname" name="productname" class="form-control" value="<?php echo $row['name'] ?>" />
+                                    <h5 class="form-label font-weight-bold" for="productname">Customer Name</h5>
+                                    <p><?php echo $row['fname'] . ' ' . $row['lname'] ?></p>
                                 </div>
                             </div>
                             <div class="col ">
-                                <label for="exampleFormControlTextarea11" class="form-label">Unit of Measure</label>
-                                <select class="form-select" aria-label="Default select example" name="productunit">
-                                    <option selected hidden value="">Select Unit</option>
-                                    <option value="" <?php echo $row['unit'] == '' ? "selected" : '' ?>>none</option>
-                                    <option value="mg" <?php echo $row['unit'] == 'kg' ? "selected" : '' ?>>kg</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Text input -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example3">Setect Category</label>
-                            <select class="form-select" name="cat" aria-label="Default select example" name="cat">
-                                <option selected hidden value="">Select Category</option>
-                                <option value="1" <?php echo $row['cat_id'] == '1' ? "selected" : '' ?>>Vegetables</option>
-                                <option value="2" <?php echo $row['cat_id'] == '2' ? "selected" : '' ?>>Fruits</option>
-                                <option value="3" <?php echo $row['cat_id'] == '3' ? "selected" : '' ?>>Juices</option>
-                                <option value="4" <?php echo $row['cat_id'] == '4' ? "selected" : '' ?>>Dried</option>
-                            </select>
-                        </div>
-
-                        <!-- Text input -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example42">Product Description</label>
-                            <!-- <input type="text" name="price" id="form6Example4" class="form-control" /> -->
-                            <textarea class="form-control" name="desc" id="form6Example42" value="<?php echo $row['description'] ?>"></textarea>
-                        </div>
-
-                        <!-- Text input -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example4">Product Price</label>
-                            <input type="number" name="price" id="form6Example4" class="form-control" value="<?php echo $row['price'] ?>" />
-                        </div>
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form6Example4">Available Qunatity</label>
-                            <input type="number" name="qty" id="form6Example4" class="form-control" value="<?php echo $row['qty'] ?>" />
-                        </div>
-
-                        <!-- Number input -->
-                        <!-- <div class="form-outline mb-4">
-                            <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Product Content</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
-                            </div>
-
-                        </div> -->
-
-                        <div class="row mb-4">
-                            <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Protein Content in Product</label>
-                                <input type="number" class="form-control" placeholder="120" name="n1" value="<?php echo $row['n1'] ?>">
-                            </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea111" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example" name="n1unit" required>
-                                    <option selected value="" hidden>Select Unit</option>
-                                    <option value="g" <?php echo $row['n1_unit'] == 'g' ? "selected" : '' ?>>gram</option>
-                                    <option value="mg" <?php echo $row['n1_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea13" class="form-label">Fat Content in Product</label>
-                                <input type="number" class="form-control" placeholder="200" name="n2" value="<?php echo $row['n2'] ?>">
-                            </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea12" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example" name="n2unit">
-                                    <option selected value="" hidden>Select Unit</option>
-                                    <option value="g" <?php echo $row['n2_unit'] == 'g' ? "selected" : '' ?>>gram</option>
-                                    <option value="mg" <?php echo $row['n2_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
-                                </select>
+                                <h5 for="exampleFormControlTextarea11" class="form-label">Address</h5>
+                                <p><?php echo $row['addr1'] ?></p>
+                                <p><?php echo $row['addr2'] ?></p>
+                                <p><?php echo $row['city'] ?></p>
+                                <p><?php echo $row['zip'] ?></p>
                             </div>
                         </div>
                         <div class="row mb-4">
-                            <div class="col ">
-                                <label for="exampleFormControlTextarea1" class="form-label">Carbs Content in Product</label>
-                                <input type="number" class="form-control" placeholder="150" name="n3" value="<?php echo $row['n3'] ?>">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <h5 class="form-label font-weight-bold" for="productname">Contact Number</h5>
+                                    <p><?php echo $row['phone'] ?></p>
+                                </div>
                             </div>
                             <div class="col ">
-                                <label for="exampleFormControlTextarea11" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example" name="n3unit">
-                                    <option selected value="" hidden>Select Unit</option>
-                                    <option value="g" <?php echo $row['n3_unit'] == 'g' ? "selected" : '' ?>>gram</option>
-                                    <option value="mg" <?php echo $row['n3_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Fiber Content in Product</label>
-                                <input type="number" class="form-control" placeholder="320" name="n4" value="<?php echo $row['n4'] ?>">
-                            </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example" name="n4unit">
-                                    <option selected value="" hidden>Select Unit</option>
-                                    <option value="g" <?php echo $row['n4_unit'] == 'g' ? "selected" : '' ?>>gram</option>
-                                    <option value="mg" <?php echo $row['n4_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
-                                </select>
+                                <h5 for="exampleFormControlTextarea11" class="form-label">Customer Email</h5>
+                                <p><?php echo $row['email'] ?></p>
+
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Iron Content in Product</label>
-                                <input type="number" class="form-control" placeholder="180" name="n5" value="<?php echo $row['n5'] ?>">
+                                <div class="form-outline">
+                                    <h5 class="form-label font-weight-bold" for="productname">Total Amount</h5>
+                                    <p>Rs. <?php echo $row['total'] ?></p>
+                                </div>
                             </div>
-                            <div class="col">
-                                <label for="exampleFormControlTextarea1" class="form-label">Unit</label>
-                                <select class="form-select" aria-label="Default select example" name="n5unit">
-                                    <option selected value="" hidden>Select Unit</option>
-                                    <option value="g" <?php echo $row['n5_unit'] == 'g' ? "selected" : '' ?>>gram</option>
-                                    <option value="mg" <?php echo $row['n5_unit'] == 'mg' ? "selected" : '' ?>>miligram</option>
-                                </select>
+                            <div class="col ">
+                                <h5 class="form-label font-weight-bold" for="productname">Total Amount</h5>
+                                <p>Rs. <?php echo $row['total'] ?></p>
                             </div>
-
                         </div>
-
-                        <!-- Message input -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="customFile">Choose Product Image</label>
-                            <input type="file" class="form-control" id="customFile" name="img" />
-                            <br>
-
-                            <!-- Submit button -->
-                            <button type="submit" class="btn btn-primary btn-block mb-4">Add Product</button>
+                        <!-- table -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <h5 class="form-label font-weight-bold" for="productname">Order Details</h5>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Product Name</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $sql = "SELECT *,od.qty as oqty FROM order_details od INNER JOIN products p ON p.id=od.item_id WHERE order_id = '" . $_GET['id'] . "'";
+                                            $result = $conn->query($sql);
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                echo '<tr>';
+                                                echo '<td>' . $row['name'] . '</td>';
+                                                echo '<td>' . $row['oqty'] . '</td>';
+                                                echo '<td>' . $row['price'] . '</td>';
+                                                echo '<td>' . number_format($row['price'] * $row['oqty'], 2) . '</td>';
+                                                echo '</tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                     </form>
-
                 </div>
-
             </main>
-
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
