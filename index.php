@@ -18,6 +18,65 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChartw);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Year', 'Sales'],
+                <?php
+                require 'connection.php';
+                $query = "SELECT SUM(total),DATE(dateadded) FROM `orders` GROUP By dateadded ORDER BY dateadded DESC LIMIT 30";
+                $result = $conn->query($query);
+                while ($row = $result->fetch_assoc()) {
+                    echo "['" . $row['DATE(dateadded)'] . "', " . $row['SUM(total)'] . "],";
+                }
+                ?>
+            ]);
+
+            var options = {
+                title: 'Sales Performance',
+                legend: {
+                    position: 'bottom'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+
+        function drawChartw() {
+            var data = google.visualization.arrayToDataTable([
+                ['CateGory', 'Total Sales'],
+                <?php
+                $query = "SELECT SUM(p.sold),c.cat_name FROM products p INNER JOIN category c ON c.id=p.cat_id GROUP By p.cat_id";
+                $result = $conn->query($query);
+                while ($row = $result->fetch_assoc()) {
+                    echo "['" . $row['cat_name'] . "', " . $row['SUM(p.sold)'] . "],";
+                }
+                ?>
+            ]);
+
+            var options = {
+                title: 'Sales By category',
+                pieHole: 0.4,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+            chart.draw(data, options);
+        }
+    </script>
+
+
 </head>
 
 <body class="sb-nav-fixed">
@@ -100,22 +159,25 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
                     <div class="col-lg-8 mx-auto">
                         <h2>CEO Message</h2>
                         <div id="myCarousel" class="carousel slide" data-ride="carousel">
-
                             <!-- Wrapper for carousel items -->
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
                                     <div class="img-box"><img src="assets/img/person_3.jpg" alt=""></div>
-                                    <h3 class="testimonial">The COVID-19 situation has evolved further and we are dealing with a significant global challenge.
+                                    <h5 class="testimonial">The COVID-19 situation has evolved further and we are dealing with a significant global challenge.
                                         The World Health Organization has declared this outbreak a pandemic. Many governments around the world have taken stricter and more impactful measures to ensure the safety of their citizens.
                                         In addition to the immediate and grave health concerns, we are seeing a much wider impact on all of our lives as well as the global economy.
                                         Understandably, there is a great sense of unease everywhere.
-                                        It is in this context that I would like to address you on behalf of our Chairman, our entire Board of Directors, our Executive Board and myself..</h3>
+                                        It is in this context that I would like to address you on behalf of our Chairman, our entire Board of Directors, our Executive Board and myself..</h5>
                                     <p class="overview"><b>Ranoga Frenando</b>,CEO FOOD MART STORE</p>
                                 </div>
 
 
                             </div>
                         </div>
+                        <h4>Sales Overview</h4>
+                        <div id="curve_chart" style="width: 900px; height: 500px"></div>
+                        <h4>Performance By Category</h4>
+                        <div id="donutchart" style="width: 900px; height: 500px;"></div>
                     </div>
                 </div>
                 </main>
