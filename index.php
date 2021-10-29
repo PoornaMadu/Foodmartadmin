@@ -44,20 +44,19 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Core</div>
-                        <a class="nav-link active" href="index.php">
+                        <a class="nav-link" href="index.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
-                        <a class="nav-link" href="index.php">
+                        <a class="nav-link active" href="productlist.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-archive"></i></div>
                             Products
                         </a>
-                        <a class="nav-link" href="index.php">
-                            <div class="sb-nav-link-icon"><i class="fa fa-usd"></i></div>
+                        <a class="nav-link" href="orders.php">
+                            <div class="sb-nav-link-icon"><i class="fa fa-gift"></i></div>
                             Orders
                         </a>
-                        <a class="nav-link" href="productadd.php">
+                        <a class="nav-link " href="productadd.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
                         </a>
