@@ -4,7 +4,7 @@
 
 require 'connection.php';
 
-$sql = "SELECT * FROM orders";
+$sql = "SELECT * FROM orders ORDER BY dateadded DESC";
 $result = $conn->query($sql);
 
 
@@ -71,17 +71,18 @@ $result = $conn->query($sql);
             <main>
                 <div class="container">
                     <div class="row">
-                        <h1 class="mx-5 mb-5 mt-3">Listed Products</h1>
+                        <h1 class="mx-5 mb-5 mt-3">All ordersOrders</h1>
                         <div class="col-12">
                             <table class="table table-image">
                                 <thead>
                                     <tr>
                                         <!-- <th scope="col">Image</th> -->
-                                        <th scope="col">Category</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Available Qty</th>
-                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delivering Address</th>
+                                        <th scope="col">Mobile Number</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col">View</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,17 +90,14 @@ $result = $conn->query($sql);
 
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-                                            <!-- <td class="w-25">
-                                                <img src="<?php //echo ($_SERVER['DOCUMENT_ROOT'] . "/Foodsysterm/images/" . $row['img'])  
-                                                            ?>" class="img-fluid" alt="vege">
-                                            </td> -->
-                                            <td class="h5"><?php echo $row['cat_name'] ?> </td>
-                                            <td class="h5"><?php echo $row['name'] ?></td>
-                                            <td class="h5"><?php echo $row['price'] ?></td>
-                                            <td class="h5"><?php echo $row['qty'] ?> <?php echo $row['unit'] == '' ? '' : $row['unit'] ?></td>
+                                            <td class="h5"><?php echo $row['fname'] . ' ' . $row['lname'] ?> </td>
+                                            <td class="h5"><?php echo $row['addr1'] . ' ' . $row['addr2'] . ' ' . $row['city'] ?></td>
+                                            <td class="h5"><?php echo $row['phone'] ?></td>
+                                            <td class="h5"><?php echo $row['total'] ?></td>
+                                            <td class="h5"><?php echo $row['payment_method'] ?></td>
                                             <td class="h5">
-                                                <form action="edit.php">
-                                                    <button type="submit" name="id" value="<?php echo $row['pid'] ?>" class="btn btn-primary btn-block mb-4 h5">Edit</button>
+                                                <form action="vieworder.php">
+                                                    <button type="submit" name="id" value="<?php echo $row['id'] ?>" class="btn btn-primary btn-block mb-4 h5">View</button>
                                                 </form>
                                             </td>
                                         </tr>
