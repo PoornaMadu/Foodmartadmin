@@ -4,8 +4,16 @@
 
 require 'connection.php';
 
-$sql = "SELECT * FROM orders ORDER BY dateadded DESC";
+$sql = "SELECT * FROM user ORDER BY id DESC";
 $result = $conn->query($sql);
+
+//delete
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $sql = "DELETE FROM user WHERE id = $id";
+    $result = $conn->query($sql);
+    header('location: users.php');
+}
 
 
 ?>
@@ -57,7 +65,7 @@ $result = $conn->query($sql);
                             <div class="sb-nav-link-icon"><i class="fa fa-archive"></i></div>
                             Products
                         </a>
-                        <a class="nav-link active" href="orders.php">
+                        <a class="nav-link " href="orders.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-gift"></i></div>
                             Orders
                         </a>
@@ -65,7 +73,7 @@ $result = $conn->query($sql);
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
                         </a>
-                        <a class="nav-link " href="users.php">
+                        <a class="nav-link active" href="users.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-user "></i></div>
                             Users
                         </a>
@@ -75,33 +83,24 @@ $result = $conn->query($sql);
             <main>
                 <div class="container">
                     <div class="row">
-                        <h1 class="mx-5 mb-5 mt-3">All Orders</h1>
+                        <h1 class="mx-5 mb-5 mt-3">Users</h1>
                         <div class="col-12">
                             <table class="table table-image">
                                 <thead>
                                     <tr>
                                         <!-- <th scope="col">Image</th> -->
-                                        <th scope="col">Ref No.</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Delivering Address</th>
-                                        <th scope="col">Mobile Number</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Payment Method</th>
-                                        <th scope="col">View</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Email</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-                                            <td># <?php echo $row['ref'] ?></td>
-                                            <td><?php echo $row['fname'] . ' ' . $row['lname'] ?> </td>
-                                            <td><?php echo $row['addr1'] . ' ' . $row['addr2'] . ' ' . $row['city'] ?></td>
-                                            <td><?php echo $row['phone'] ?></td>
-                                            <td><?php echo $row['total'] ?></td>
-                                            <td><?php echo $row['payment_method'] ?></td>
+                                            <td><?php echo $row['username'] ?></td>
+                                            <td><?php echo $row['email'] ?></td>
                                             <td>
-                                                <form action="vieworder.php">
-                                                    <button type="submit" name="id" value="<?php echo $row['id'] ?>" class="btn btn-primary btn-block mb-4 h5">View</button>
+                                                <form action="">
+                                                    <button type="submit" name="id" value="<?php echo $row['id'] ?>" class="btn btn-danger btn-block mb-4 h5">Remove User</button>
                                                 </form>
                                             </td>
                                         </tr>

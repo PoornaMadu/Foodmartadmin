@@ -39,7 +39,7 @@ $result = $conn->query($sql);
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="login.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -64,6 +64,10 @@ $result = $conn->query($sql);
                         <a class="nav-link " href="productadd.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-plus-square "></i></div>
                             Add Products
+                        </a>
+                        <a class="nav-link " href="users.php">
+                            <div class="sb-nav-link-icon"><i class="fa fa-user "></i></div>
+                            Users
                         </a>
             </nav>
         </div>
