@@ -102,10 +102,6 @@ if (isset($_GET['delete_id'])) {
 
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-                                            <!-- <td class="w-25">
-                                                <img src="<?php //echo ($_SERVER['DOCUMENT_ROOT'] . "/Foodsysterm/images/" . $row['img'])  
-                                                            ?>" class="img-fluid" alt="vege">
-                                            </td> -->
                                             <td class="h5"><?php echo $row['cat_name'] ?> </td>
                                             <td class="h5"><?php echo $row['name'] ?></td>
                                             <td class="h5"><?php echo $row['price'] ?></td>

@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $sql2 = "INSERT INTO nutrients(product_id,n1,n2,n3,n4,n5,n1_unit,n2_unit,n3_unit,n4_unit,n5_unit) values (" . $insertedid . "," . $n1 . "," . $n2 . "," . $n3 . "," . $n4 . "," . $n5 . ",'" . $n1unit . "','" . $n2unit . "','" . $n3unit . "','" . $n4unit . "','" . $n5unit . "')";
         $result2 = $conn->query($sql2);
         echo ("<script>alert('Product Added Successfully!!!')</script>");
+        header('location: productlist.php');
         $conn->close();
     }
 }
