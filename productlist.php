@@ -7,6 +7,14 @@ require 'connection.php';
 $sql = "SELECT *,p.id as pid FROM products p INNER JOIN category c ON c.id=p.cat_id INNER JOIN nutrients n ON p.id=n.product_id";
 $result = $conn->query($sql);
 
+//delete
+if (isset($_GET['delete_id'])) {
+    $id = $_GET['delete_id'];
+    $sql2 = "DELETE FROM products WHERE id = $id";
+    $result = $conn->query($sql2);
+    header('location: productlist.php');
+}
+
 
 ?>
 
@@ -86,6 +94,7 @@ $result = $conn->query($sql);
                                         <th scope="col">Price</th>
                                         <th scope="col">Available Qty</th>
                                         <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,6 +113,11 @@ $result = $conn->query($sql);
                                             <td class="h5">
                                                 <form action="edit.php">
                                                     <button type="submit" name="id" value="<?php echo $row['pid'] ?>" class="btn btn-primary btn-block mb-4 h5">Edit</button>
+                                                </form>
+                                            </td>
+                                            <td class="h5">
+                                                <form action="">
+                                                    <button type="submit" name="delete_id" value="<?php echo $row['pid'] ?>" class="btn btn-danger btn-block mb-4 h5">Delete</button>
                                                 </form>
                                             </td>
                                         </tr>

@@ -34,7 +34,7 @@ if (!isset($_COOKIE['admin_logged']) || $_COOKIE['admin_logged'] != 1) {
                 ['Year', 'Sales'],
                 <?php
                 require 'connection.php';
-                $query = "SELECT SUM(total),DATE(dateadded) FROM `orders` GROUP By dateadded ORDER BY dateadded DESC LIMIT 30";
+                $query = "SELECT SUM(total),DATE(dateadded) FROM `orders` GROUP By dateadded ORDER BY dateadded ASC LIMIT 30";
                 $result = $conn->query($query);
                 while ($row = $result->fetch_assoc()) {
                     echo "['" . $row['DATE(dateadded)'] . "', " . $row['SUM(total)'] . "],";
