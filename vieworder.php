@@ -4,7 +4,7 @@
 require 'connection.php';
 $row;
 if (!isset($_GET['id'])) {
-    header('location: productlist.php');
+    header('location: orders.php');
 } else {
     $sql = "SELECT * FROM orders o INNER JOIN order_details od ON o.id=od.order_id INNER JOIN products p ON od.item_id=p.id where o.id=" . $_GET['id'];
     $result = $conn->query($sql);
@@ -15,42 +15,6 @@ if (!isset($_GET['id'])) {
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    $name = $_POST['productname'];
-    $punit = $_POST['productunit'];
-    $cat = $_POST['cat'];
-    $price = $_POST['price'];
-    $desc = $_POST['desc'];
-    $qty = $_POST['qty'];
-    $n1 = $_POST['n1'];
-    $n2 = $_POST['n2'];
-    $n3 = $_POST['n3'];
-    $n4 = $_POST['n4'];
-    $n5 = $_POST['n5'];
-    $n1unit = $_POST['n1unit'];
-    $n2unit = $_POST['n2unit'];
-    $n3unit = $_POST['n3unit'];
-    $n4unit = $_POST['n4unit'];
-    $n5unit = $_POST['n5unit'];
-    $date = time();
-    $imgname = $date . ".jpg";
-    // $img = $_POST['img'];
-    if (empty($name) || empty($cat) || empty($price) || empty($qty) || empty($n1) || empty($n2) || empty($n3) || empty($n4) || empty($n5) || empty($n1unit) || empty($n2unit) || empty($n3unit) || empty($n4unit) || empty($n5unit)) {
-        echo ("<script>alert('Fill out all the fields')</script>");
-        // exit();
-    } else if (empty($_FILES["img"]['name'])) {
-        $sql = "UPDATE products SET cat_id ='$cat',name='$name',price='$qty', description='$desc',qty='$qty',unit='$punit' WHERE id=" . $_GET['id'];
-        $result = $conn->query($sql);
-        echo ("<script>alert('Product Updated Successfully!!!')</script>");
-        $conn->close();
-    } else {
-        move_uploaded_file($_FILES["img"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/Foodsysterm/images/" . $date . ".jpg");
-        $sql = "UPDATE products SET cat_id ='$cat',name='$name',price='$qty', description='$desc',qty='$qty',unit='$punit',img='$imgname' WHERE id=" . $_GET['id'];
-        $result = $conn->query($sql);
-        echo ("<script>alert('Product Updated Successfully!!!')</script>");
-        $conn->close();
-    }
-}
 ?>
 
 <head>
